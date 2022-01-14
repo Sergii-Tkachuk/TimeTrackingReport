@@ -6,94 +6,109 @@
 
 using namespace std;
 
-template<class T>
-struct DataTable
+struct Date
 {
-	string m_nameTable;
-	vector<T> m_elements;
+	int Years;
+	int Months;
+	int Days;
+
+	void getDate(string str)
+	{
+		char separator;
+		stringstream stream(str);
+		stream >> Years >> separator;
+		stream >> Months >> separator;
+		stream >> Days;
+	}
 };
 
-class TableCSV
+struct DataRows
 {
-	DataTable<string> Name;
-	DataTable<string> Email;
-	DataTable<string> Department;
-	DataTable<string> Position;
-	DataTable<string> Project;
-	DataTable<string> Task;
-	DataTable<string> Date;
-	DataTable<int>    LoggerHours;
+	string Name;
+	string Email;
+	string Department;
+	string Position;
+	string Project;
+	string Task;
+	Date date = {0, 0, 0};
+	int LoggedHours = 0;
+};
 
-public:
-	TableCSV(ifstream &inFile)
+
+bool operator > (const DataRows& d1, const DataRows& d2)
+{
+	return d1.Name > d2.Name || d1.date.Years > d2.date.Years || d1.date.Months > d2.date.Months;
+}
+
+bool operator < (const DataRows& d1, const DataRows& d2)
+{
+	return d1.Name < d2.Name || d1.date.Years < d2.date.Years || d1.date.Months < d2.date.Months;
+}
+
+bool operator == (const DataRows& d1, const DataRows& d2)
+{
+	return d1.Name == d2.Name && d1.date.Years == d2.date.Years && d1.date.Months == d2.date.Months;
+}
+
+
+void addData(istream &input, vector<DataRows> &rows)
+{
+	string buffString;
+
+	while (getline(input, buffString))
 	{
-		string buffString;
-		getline(inFile, buffString);
 		stringstream buffStream(buffString);
+		DataRows buffRows;
 
-		getline(buffStream, Name.m_nameTable, ';');
-		getline(buffStream, Email.m_nameTable, ';');
-		getline(buffStream, Department.m_nameTable, ';');
-		getline(buffStream, Position.m_nameTable, ';');
-		getline(buffStream, Project.m_nameTable, ';');
-		getline(buffStream, Task.m_nameTable, ';');
-		getline(buffStream, Date.m_nameTable, ';');
-		getline(buffStream, LoggerHours.m_nameTable, ';');
+		getline(buffStream, buffRows.Name, ';');
+		getline(buffStream, buffRows.Email, ';');
+		getline(buffStream, buffRows.Department, ';');
+		getline(buffStream, buffRows.Position, ';');
+		getline(buffStream, buffRows.Project, ';');
+		getline(buffStream, buffRows.Task, ';');
+
+		getline(buffStream, buffString, ';');
+		buffRows.date.getDate(buffString);
+
+		buffStream >> buffRows.LoggedHours;
+
+		rows.push_back(buffRows);
 	}
+}
 
-	void addNewObject(ifstream& inFile)
+void PrintData(ostream& out, vector<DataRows> arrData)
+{
+	for (const auto& elem : arrData)
+		out << elem.Name << ';' << elem.date.Years << '-' << elem.date.Months << ';' << elem.LoggedHours << '\n';
+}
+
+void Report(vector<DataRows> arr)
+{
+	for (int i = 0; i < arr.size() - 1; i++)
 	{
-		string buffString;
-		getline(inFile, buffString);
-		stringstream buffStream(buffString);
-
-		getline(buffStream, buffString, ';');
-		Name.m_elements.push_back(buffString);
-
-		getline(buffStream, buffString, ';');
-		Email.m_elements.push_back(buffString);
-
-		getline(buffStream, buffString, ';');
-		Department.m_elements.push_back(buffString);
-
-		getline(buffStream, buffString, ';');
-		Position.m_elements.push_back(buffString);
-
-		getline(buffStream, buffString, ';');
-		Project.m_elements.push_back(buffString);
-
-		getline(buffStream, buffString, ';');
-		Task.m_elements.push_back(buffString);
-
-		getline(buffStream, buffString, ';');
-		Date.m_elements.push_back(buffString);
-
-		getline(buffStream, buffString, ';');
-		LoggerHours.m_elements.push_back(atoi(buffString.c_str()));
-	}
-
-	void print()
-	{
-		for (int i = 0; i < Name.m_elements.size(); i++)
+		for (int j = i + 1; j < arr.size(); ++j)
 		{
-			if(Name.m_elements[i] == )
-			cout << Name.m_elements[i] << '\n';
+			if (arr[i] == arr[j])
+			{
+				arr[i].LoggedHours += arr[j].LoggedHours;
+				arr.erase(arr.begin() + j);
+			}
 		}
 	}
-};
-
-
-
+	PrintData(cout, arr);
+}
 
 int main()
 {
 	ifstream inFile("data_file.txt");
 	
-	TableCSV csv(inFile);
-	while (inFile)
-	{
-		csv.addNewObject(inFile);
-	}
-	
-	csv.print();
+	vector<DataRows> dataRows;
+	string columnName;
+	getline(inFile, columnName);
+
+	while(inFile)
+		addData(inFile, dataRows);
+	inFile.close();
+
+	Report(dataRows);
 }
