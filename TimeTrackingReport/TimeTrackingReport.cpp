@@ -19,13 +19,13 @@ int main()
 {
 	TableCSV csv;
 	
-	if (csv.initCSV("data_file.csv")) //зчитуванн€ data_file.csv в об'Їкт csv
+	if (csv.InitCSV("data_file.csv"))
 	{
-		std::cout << csv.getNameColumns() << '\n';       //виводито ≥мена колонок
-		for (int i = 0; i < csv.countWorkers(); ++i)//виводимо дан≥ прац≥вник≥в
+		std::cout << csv.getNameColumns() << '\n';
+		for (int i = 0; i < csv.CountWorkers(); ++i)
 			std::cout << csv[i];
 
-		csv.Report();                               //генеруЇмо зв≥т прац≥вник≥в за м≥с€ць в Time_report.csv
+		csv.Report();
 	}
 	return 0;
 }

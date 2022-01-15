@@ -1,14 +1,14 @@
 #include "TableCSV.h"
 
-bool TableCSV::initCSV(std::string nameFile)
+bool TableCSV::InitCSV(std::string nameFile)
 {
 	if (nameFile == "data_file.csv" || nameFile == "data_file.txt")
 	{
 		std::cout << "Initialization " << nameFile << " file\n";
 		
-		FileCSV = std::ifstream(nameFile);
+		fileCSV = std::ifstream(nameFile);
 
-		updateData();
+		UpdateData();
 		return true;
 	}
 	else
@@ -18,15 +18,15 @@ bool TableCSV::initCSV(std::string nameFile)
 	}
 }
 
-void TableCSV::updateData()
+void TableCSV::UpdateData()
 {
 	workers.clear();
-	FileCSV.seekg(0, std::ios::beg);
+	fileCSV.seekg(0, std::ios::beg);
 
 	std::string buffString;
-	getline(FileCSV, nameColumns);
+	getline(fileCSV, nameColumns);
 
-	while (std::getline(FileCSV, buffString))
+	while (std::getline(fileCSV, buffString))
 	{
 		std::stringstream buffStream(buffString);
 		Worker buffRows;
@@ -47,12 +47,12 @@ void TableCSV::updateData()
 	}
 }
 
-void TableCSV::addWorker(Worker worker)
+void TableCSV::AddWorker(Worker worker)
 {
 	workers.push_back(worker);
 }
 
-int TableCSV::countWorkers()
+int TableCSV::CountWorkers()
 {
 	return workers.size();
 }

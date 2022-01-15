@@ -25,16 +25,16 @@ struct Worker
 class TableCSV
 {
 	std::vector<Worker> workers;
-	std::ifstream FileCSV;
+	std::ifstream fileCSV;
 	std::string nameColumns;
 
 public:
-	bool initCSV(std::string nameFile);  //≥н≥ц≥ал≥зуЇ таблицю csv
-	void updateData();                   //€кщо файл.csv був зм≥нений, то оновлюЇмо наш≥ дан≥
-	void addWorker(Worker worker);       //додаЇ новий елемент типу Worker
-	int countWorkers();                  //повертаЇ к≥льк≥сть елемент≥в массиву workers
-	void Report();                       //генерац≥€ щом≥с€чного зв≥ту
-	std::string getNameColumns();        //повертаЇ ≥мена колонок
+	bool InitCSV(std::string nameFile);
+	void UpdateData();
+	void AddWorker(Worker worker);
+	int CountWorkers();
+	void Report();
+	std::string getNameColumns();
 	Worker& operator[] (const int index);
 };
 
